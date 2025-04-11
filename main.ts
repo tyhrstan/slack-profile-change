@@ -44,7 +44,7 @@ const emojiImageMap = new Map<string, string>([
   ["", "./normaal.png"],
 ]);
 
-Deno.cron("match profile id", { minute: { every: 5 } }, () => {
+Deno.cron("match profile id", "*/2 8-18 * * 1-5", () => {
 
   fetchProfilePicture()
     .then(async data => {
