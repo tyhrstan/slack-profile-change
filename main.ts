@@ -44,9 +44,8 @@ const emojiImageMap = new Map<string, string>([
   ["", "./normaal.png"],
 ]);
 
-Deno.cron("match profile id", { minute: { every: 1 } }, () => {
+Deno.cron("match profile id", { minute: { every: 5 } }, () => {
 
-  console.log("Fetching profile picture...");
   fetchProfilePicture()
     .then(async data => {
       if (data) {
@@ -55,9 +54,6 @@ Deno.cron("match profile id", { minute: { every: 1 } }, () => {
         const emoji = data.profile.status_emoji || "";
         const avatarHash = data.profile.avatar_hash;
         const storedAvatar = await kv.get([`avatar_hash_${emoji}`]);
-        console.log("Fetched emoji:", emoji); 
-        console.log("Fetched avatar hash:", avatarHash);
-        console.log("Stored avatar hash:", storedAvatar.value);
         if (emojiImageMap.has(emoji) && storedAvatar.value !== avatarHash) {
           const imageFilePath = emojiImageMap.get(emoji);
           const imageFile = await Deno.readFile(imageFilePath as string);
