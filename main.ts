@@ -1,7 +1,7 @@
 import "jsr:@std/dotenv/load";
 import { SlackResponse } from "./types.ts";
 
-const fetchProfilePicture = async () : Promise<SlackResponse | null> => {
+const fetchProfilePicture = async (): Promise<SlackResponse | null> => {
   const response = await fetch("https://slack.com/api/users.profile.get", {
     headers: {
       Authorization: `Bearer ${Deno.env.get("SLACK_TOKEN")}`
@@ -15,7 +15,7 @@ const fetchProfilePicture = async () : Promise<SlackResponse | null> => {
   return data;
 }
 
-const setProfilePicture = async (imageFile: Blob) : Promise<SlackResponse | null> => {
+const setProfilePicture = async (imageFile: Blob): Promise<SlackResponse | null> => {
   const formData = new FormData();
   formData.append("image", imageFile, "avatar.png");
 
@@ -36,26 +36,42 @@ const setProfilePicture = async (imageFile: Blob) : Promise<SlackResponse | null
 
 const kv = await Deno.openKv();
 
-const emojiImageMap = new Map<string, string>([
-  [":bread:", "./eten.png"],
-  [":pompom:", "./eureka.png"],
-  [":dash:", "./rennen.png"],
-  [":thinking_face:", "./verbaasd.png"],
-  ["", "./normaal.png"],
+const stateToWordsAndImageMap = new Map<string, { image: string, words: string[] }>([
+  ["eating", { image: "./images/eten.png", words: ["lunch", "eten", "brood"] }],
+  ["busy", { image: "./images/bezig.png", words: ["bezig", "druk"] }],
+  ["angry", { image: "./images/boos.png", words: ["rage"] }],
+  ["eureka", { image: "./images/euraka.png", words: ["yes!", "hoppa"] }],
+  ["dnd", { image: "./images/niet-storen.png", words: ["niet storen", "afwezig", "meeting"] }],
+  ["relaxed", { image: "./images/relaxed.png", words: ["chill", "weekend"] }],
+  ["away", { image: "./images/rennen.png", words: ["zo terug", "boodschappen", "brb"] }],
+  ["suprised", { image: "./images/verbaasd.png", words: ["whut"] }],
+  // Add more states and their corresponding images and words here
+  ["default", { image: "./images/normaal.png", words: [] }],
 ]);
 
-Deno.cron("match profile id", "*/2 6-16 * * 2-6", () => {
+Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
 
   fetchProfilePicture()
     .then(async data => {
       if (data) {
-        
+
         //check if the profile emonji is in the map and if the avatar_hash is not the same as stored in kv set the profile picture
-        const emoji = data.profile.status_emoji || "";
+        const status_text = data.profile.status_text || "";
         const avatarHash = data.profile.avatar_hash;
-        const storedAvatar = await kv.get([`avatar_hash_${emoji}`]);
-        if (emojiImageMap.has(emoji) && storedAvatar.value !== avatarHash) {
-          const imageFilePath = emojiImageMap.get(emoji);
+        const findStateKeyByStatusText = (status_text: string) => {
+          for (const [key, value] of stateToWordsAndImageMap.entries()) {
+            if (value.words.some(word => status_text.toLowerCase().includes(word))) {
+              return key;
+            }
+          }
+          return null;
+        };
+        console.log("💭 Status text:", status_text);
+        const matchedState = findStateKeyByStatusText(status_text) ?? "default";
+        const storedAvatar = await kv.get([`avatar_hash_${matchedState}`]);
+        if (stateToWordsAndImageMap.has(matchedState) && storedAvatar.value !== avatarHash) {
+          console.log("✨ Changing state to:", matchedState);
+          const imageFilePath = stateToWordsAndImageMap.get(matchedState)?.image;
           const imageFile = await Deno.readFile(imageFilePath as string);
           if (imageFile) {
             setProfilePicture(new Blob([imageFile], { type: "image/png" }))
@@ -63,7 +79,7 @@ Deno.cron("match profile id", "*/2 6-16 * * 2-6", () => {
                 if (response && response.ok) {
                   const newAvatarHash = response.profile.avatar_hash;
                   console.log("✅ Profile picture updated successfully:", newAvatarHash);
-                  kv.set([`avatar_hash_${emoji}`], newAvatarHash);
+                  kv.set([`avatar_hash_${matchedState}`], newAvatarHash);
                 } else {
                   console.error("❌ Failed to update profile picture.");
                 }
