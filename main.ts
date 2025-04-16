@@ -41,17 +41,20 @@ const stateToWordsAndImageMap = new Map<string, { image: string, words: string[]
   ["amazed", { image: "./images/amazed.png", words: ["verbaasd", "verbazig"] }],
   ["angry", { image: "./images/angry.png", words: ["rage", "boos", "angry"] }],
   ["busy", { image: "./images/busy.png", words: ["bezig", "druk"] }],
-  ["cry", { image: "./images/cry.png", words: [":(", "sad"] }],
-  ["dnd", { image: "./images/dnd.png", words: ["niet storen", "afwezig", "meeting"] }],
-  ["relaxed", { image: "./images/relaxed.png", words: ["chill", "weekend"] }],
-  ["run", { image: "./images/run.png", words: ["zo terug", "boodschappen", "brb"] }],
+  ["cry", { image: "./images/cry.png", words: [":'(", "cry"] }],
   ["questioning", { image: "./images/questioning.png", words: ["whut", "??"] }],
+  ["dnd", { image: "./images/dnd.png", words: ["niet storen", "afwezig", "meeting"] }],
+  ["relaxing", { image: "./images/relaxing.png", words: ["chill", "weekend"] }],
+  ["run", { image: "./images/run.png", words: ["zo terug", "boodschappen", "brb"] }],
+  ["sad", { image: "./images/sad.png", words: [":(", "sad", "ai"] }],
   ["scared", { image: "./images/questioning.png", words: ["aiai", "!!", "ohnoos"] }],
+  ["sleep", { image: "./images/sleep.png", words: ["slapen", "tukkie doen", "sleap"] }],
+  ["sweat", { image: "./images/sweat.png", words: ["zweten", "peentjes"] }],
   // Add more states and their corresponding images and words here
   ["default", { image: "./images/default.png", words: [] }],
 ]);
 
-Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
+//Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
 
   fetchProfilePicture()
     .then(async data => {
@@ -101,5 +104,5 @@ Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
       console.error("💀 Error fetching profile picture:", error);
     });
 
-});
+//});
 console.debug("🕝 Registered cron job");
