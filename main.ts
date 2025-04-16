@@ -37,16 +37,18 @@ const setProfilePicture = async (imageFile: Blob): Promise<SlackResponse | null>
 const kv = await Deno.openKv();
 
 const stateToWordsAndImageMap = new Map<string, { image: string, words: string[] }>([
-  ["eating", { image: "./images/eten.png", words: ["lunch", "eten", "brood"] }],
-  ["busy", { image: "./images/bezig.png", words: ["bezig", "druk"] }],
-  ["angry", { image: "./images/boos.png", words: ["rage"] }],
-  ["eureka", { image: "./images/euraka.png", words: ["yes!", "hoppa"] }],
+  //["eating", { image: "./images/eten.png", words: ["lunch", "eten", "brood"] }],
+  ["amazed", { image: "./images/amazed.png", words: ["verbaasd", "verbazig"] }],
+  ["angry", { image: "./images/boos.png", words: ["rage", "boos", "angry"] }],
+  ["busy", { image: "./images/busy.png", words: ["bezig", "druk"] }],
+  ["cry", { image: "./images/euraka.png", words: [":(", "sad"] }],
   ["dnd", { image: "./images/niet-storen.png", words: ["niet storen", "afwezig", "meeting"] }],
   ["relaxed", { image: "./images/relaxed.png", words: ["chill", "weekend"] }],
-  ["away", { image: "./images/rennen.png", words: ["zo terug", "boodschappen", "brb"] }],
-  ["suprised", { image: "./images/verbaasd.png", words: ["whut"] }],
+  ["run", { image: "./images/run.png", words: ["zo terug", "boodschappen", "brb"] }],
+  ["questioning", { image: "./images/questioning.png", words: ["whut", "??"] }],
+  ["scared", { image: "./images/questioning.png", words: ["aiai", "!!", "ohnoos"] }],
   // Add more states and their corresponding images and words here
-  ["default", { image: "./images/normaal.png", words: [] }],
+  ["default", { image: "./images/default.png", words: [] }],
 ]);
 
 Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
