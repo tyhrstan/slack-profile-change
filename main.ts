@@ -54,7 +54,7 @@ const stateToWordsAndImageMap = new Map<string, { image: string, words: string[]
   ["default", { image: "./images/default.png", words: [] }],
 ]);
 
-//Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
+Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
 
   fetchProfilePicture()
     .then(async data => {
@@ -104,5 +104,5 @@ const stateToWordsAndImageMap = new Map<string, { image: string, words: string[]
       console.error("💀 Error fetching profile picture:", error);
     });
 
-//});
+});
 console.debug("🕝 Registered cron job");
