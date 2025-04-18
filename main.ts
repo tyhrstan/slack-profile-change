@@ -47,7 +47,7 @@ const stateToWordsAndImageMap = new Map<string, { image: string, words: string[]
   ["run", { image: "./images/run.png", words: ["zo terug", "boodschappen", "brb"] }],
   ["sad", { image: "./images/sad.png", words: [":(", "sad", "ai"] }],
   ["scared", { image: "./images/questioning.png", words: ["aiai", "!!", "ohnoos"] }],
-  ["sleep", { image: "./images/sleep.png", words: ["slapen", "tukkie doen", "sleap"] }],
+  ["sleep", { image: "./images/sleep.png", words: ["slapen", "tukkie doen", "sleep"] }],
   ["sweat", { image: "./images/sweat.png", words: ["zweten", "peentjes"] }],
   // Add more states and their corresponding images and words here
   ["default", { image: "./images/default.png", words: [] }],
