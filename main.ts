@@ -37,20 +37,35 @@ const setProfilePicture = async (imageFile: Blob): Promise<SlackResponse | null>
 const kv = await Deno.openKv();
 
 const stateToWordsAndImageMap = new Map<string, { image: string, words: string[] }>([
-  //["eating", { image: "./images/eten.png", words: ["lunch", "eten", "brood"] }],
-  ["amazed", { image: "./images/amazed.png", words: ["verbaasd", "verbazig"] }],
-  ["angry", { image: "./images/angry.png", words: ["rage", "boos", "angry"] }],
-  ["busy", { image: "./images/busy.png", words: ["bezig", "druk", "niet storen", "afwezig", "meeting"] }],
-  ["cry", { image: "./images/cry.png", words: [":'(", "cry"] }],
-  ["questioning", { image: "./images/questioning.png", words: ["whut", "??"] }],
-  ["relaxing", { image: "./images/relaxing.png", words: ["chill", "weekend"] }],
-  ["run", { image: "./images/run.png", words: ["zo terug", "boodschappen", "brb"] }],
-  ["sad", { image: "./images/sad.png", words: [":(", "sad", "ai"] }],
-  ["scared", { image: "./images/questioning.png", words: ["aiai", "!!", "ohnoos"] }],
-  ["sleep", { image: "./images/sleep.png", words: ["slapen", "tukkie doen", "sleep"] }],
-  ["sweat", { image: "./images/sweat.png", words: ["zweten", "peentjes"] }],
-  // Add more states and their corresponding images and words here
-  ["default", { image: "./images/default.png", words: [] }],
+  ["default", { image: "./images/happy.png", words: [] }],
+
+  ["agitated", { image: "./images/agitated.png", words: ["agitated", "mad", "frustrated", "geërgerd", "gefrustreerd", "💀", ":skull:"] }],
+  ["alarmed", { image: "./images/alarmed.png", words: ["alarmed", "alert", "startled", "gealarmeerd", "geschrokken", "🚨", ":alarm:"] }],
+  ["angry", { image: "./images/angry.png", words: ["angry", "furious", "irritated", "boos", "kwaad", "geïrriteerd", "😠", ":angry:"] }],
+  ["bored", { image: "./images/bored.png", words: ["bored", "uninterested", "apathetic", "verveeld", "ongeïnteresseerd", "apathisch", "😐", ":neutral_face:"] }],
+  ["confused", { image: "./images/confused.png", words: ["confused", "puzzled", "uncertain", "verward", "in de war", "onzeker", "🤔", ":thinking_face:"] }],
+  ["content", { image: "./images/content.png", words: ["content", "satisfied", "pleased", "tevreden", "voldaan", "blij", "😊", ":smile:"] }],
+  ["cry-hard", { image: "./images/cry-hard.png", words: ["crying", "sobbing", "weeping", "hard huilen", "snikken", "wenen", "😭", ":sob:"] }],
+  ["eating", { image: "./images/eating.png", words: ["eating", "snacking", "dining", "eten", "lunch", "food", "snacken", "dineren", "🍴", ":fork_and_knife:"] }],
+  ["embarrassed", { image: "./images/embarrassed.png", words: ["embarrassed", "ashamed", "awkward", "beschaamd", "verlegen", "ongemakkelijk", "😳", ":blush:"] }],
+  ["excited", { image: "./images/excited.png", words: ["excited", "thrilled", "enthusiastic", "opgewonden", "enthousiast", "verheugd", "😃", ":smiley:"] }],
+  ["gratefull", { image: "./images/gratefull.png", words: ["grateful", "thankful", "appreciative", "dankbaar", "erkentelijk", "waarderend", "🙏", ":pray:"] }],
+  ["happy", { image: "./images/happy.png", words: ["happy", "joyful", "cheerful", "blij", "gelukkig", "vrolijk", "😄", ":smirk:"] }],
+  ["in-love", { image: "./images/in-love.png", words: ["in love", "infatuated", "smitten", "verliefd", "betoverd", "smachtend", "❤️", ":heart:"] }],
+  ["laughing", { image: "./images/laughing.png", words: ["laughing", "giggling", "chuckling", "lachen", "grinniken", "giechelen", "😂", ":joy:"] }],
+  ["mad", { image: "./images/mad.png", words: ["mad", "ziedend", "😡"] }],
+  ["making-a-point", { image: "./images/making-a-point.png", words: ["making a point", "emphasizing", "highlighting", "een punt maken", "benadrukken", "onderstrepen", "☝️"] }],
+  ["nervous", { image: "./images/nervous.png", words: ["nervous", "anxious", "tense", "nerveus", "angstig", "gespannen", "😬"] }],
+  ["sad", { image: "./images/sad.png", words: ["sad", "unhappy", "down", "verdrietig", "ongelukkig", "somber", "😢"] }],
+  ["shocked", { image: "./images/shocked.png", words: ["shocked", "stunned", "dumbfounded", "geschokt", "verbijsterd", "onthutst", "😱"] }],
+  ["sleeping", { image: "./images/sleeping.png", words: ["sleeping", "resting", "napping", "slapen", "rusten", "dutten", "😴", "⛔"] }],
+  ["sleepy", { image: "./images/sleepy.png", words: ["sleepy", "drowsy", "tired", "slaperig", "moe", "dof", "😪"] }],
+  ["smirking", { image: "./images/smirking.png", words: ["smirking", "grinning", "sneering", "grijnzen", "glimlachen", "spottend", "😏"] }],
+  ["stressed", { image: "./images/stressed.png", words: ["stressed", "overwhelmed", "tense", "gestrest", "overweldigd", "gespannen", "😰"] }],
+  ["suspicious", { image: "./images/suspicious.png", words: ["suspicious", "doubtful", "skeptical", "verdacht", "twijfelachtig", "sceptisch", "🤨"] }],
+  ["unimpressed", { image: "./images/unimpressed.png", words: ["unimpressed", "indifferent", "apathetic", "onverschillig", "apathisch", "niet onder de indruk", "😒"] }],
+  ["working-hard", { image: "./images/working-hard.png", words: ["working hard", "focused", "dedicated", "hard werken", "gefocust", "toegewijd", "💪"] }],
+  ["yawning", { image: "./images/yawning.png", words: ["yawning", "tired", "sleepy", "geeuwen", "moe", "slaperig", "😪"] }]
 ]);
 
 Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
@@ -58,9 +73,10 @@ Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
   fetchProfilePicture()
     .then(async data => {
       if (data) {
-
+        console.log("👤 Profile data:", data);
         //check if the profile emonji is in the map and if the avatar_hash is not the same as stored in kv set the profile picture
         const status_text = data.profile.status_text || "";
+        const status_emoji = data.profile.status_emoji || "";
         const avatarHash = data.profile.avatar_hash;
         const findStateKeyByStatusText = (status_text: string) => {
           for (const [key, value] of stateToWordsAndImageMap.entries()) {
@@ -70,8 +86,16 @@ Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
           }
           return null;
         };
+        const findStateKeyByStatusEmoji = (status_emoji: string) => {
+          for (const [key, value] of stateToWordsAndImageMap.entries()) {
+            if (value.words.some(word => status_emoji.toLowerCase().includes(word))) {
+              return key;
+            }
+          }
+          return null;
+        };
         console.log("💭 Status text:", status_text);
-        const matchedState = findStateKeyByStatusText(status_text) ?? "default";
+        const matchedState = findStateKeyByStatusText(status_text) || findStateKeyByStatusEmoji(status_emoji) || "default";
         const storedAvatar = await kv.get([`avatar_hash_${matchedState}`]);
         if (stateToWordsAndImageMap.has(matchedState) && storedAvatar.value !== avatarHash) {
           console.log("✨ Changing state to:", matchedState);
