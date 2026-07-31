@@ -129,3 +129,5 @@ Deno.cron("track during workhours", "*/2 6-16 * * 2-6", () => {
 
 });
 console.debug("🕝 Registered cron job");
+
+Deno.serve(() => new Response("✨ Slack profile picture updater is running!"));
